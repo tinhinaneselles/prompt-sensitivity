@@ -3,10 +3,10 @@ import streamlit as st
 from db import list_prompt_variants, load_prompt_variant, list_runs_for_variant
 
 
-def render_answers_per_variant():
+def render_answers_per_variant(): # redering ui componeents 
     st.header("LLM Answers per Variant")
 
-    base_prompt_id = st.session_state.get("base_prompt_id_step3")
+    base_prompt_id = st.session_state.get("base_prompt_id_step3") # reading the state of th prompt from ste 3 
     if not (st.session_state.get("active_spec_id") and base_prompt_id):
         st.caption("Select a Base Prompt in Step 3 to view per-variant answers.")
         return
