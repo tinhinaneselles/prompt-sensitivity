@@ -54,29 +54,29 @@ def generate_variants(
 
     for pid in selected_persona_ids:
         p = persona_map[pid]
-        v_text = apply_persona(base_prompt, p)
-        variants.append(
-            {
-                "perturbation_type": "persona",
-                "perturbation_id": p["id"],
-                "strength": "medium",
-                "prompt_text": v_text,
-                "metadata": {"persona_label": p["label"], "original_task_type": spec.get("task_type")},
-            }
-        )
+        for fid in selected_format_ids:
+            f = fmt_map[fid]
 
-    for fid in selected_format_ids:
-        f = fmt_map[fid]
-        v_text = apply_output_format(base_prompt, f)
-        variants.append(
-            {
-                "perturbation_type": "format",
-                "perturbation_id": f["id"],
-                "strength": "medium",
-                "prompt_text": v_text,
-                "metadata": {"format_label": f["label"], "original_task_type": spec.get("task_type")},
-            }
-        )
+            v_text = base_prompt
+            v_text = apply_persona(v_text, p)
+            v_text = apply_output_format(v_text, f)
+
+            variants.append(
+                {
+                    "perturbation_type": "persona+format",
+                    "perturbation_id": f"{p['id']}__{f['id']}",
+                    "strength": "medium",
+                    "prompt_text": v_text,
+                    "metadata": {
+                        "persona_id": p["id"],
+                        "persona_label": p["label"],
+                        "format_id": f["id"],
+                        "format_label": f["label"],
+                        "original_task_type": spec.get("task_type"),
+                    },
+                }
+            )
+
 
     if flip_task_type:
         flipped_spec = apply_task_type_flip(spec)
@@ -95,3 +95,4 @@ def generate_variants(
         )
 
     return variants
+
